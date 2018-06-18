@@ -1,5 +1,7 @@
 {
-	"name": "abiodun/mailswifter",
+    "name": "abiodun/mailswifter",
+        "license": "MIT",
+        "type": "library",
 		"authors": [
 		{
 			"name": "Azeez Abiodun",
