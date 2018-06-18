@@ -2,13 +2,16 @@
     "name": "abiodun/mailswifter",
         "license": "MIT",
         "type": "library",
+        "description": "Mail swifter is a free mailer built on swiftmailer for html template injection and data parser",
+        "keywords": [
+            "template", "mail", "mailer", "email"
+        ],
 		"authors": [
 		{
 			"name": "Azeez Abiodun",
 			"email": "habbeboynetwork@gmail.com"
 		}
 	],
-	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.3.0",
 		"swiftmailer/swiftmailer": "^6.0"
