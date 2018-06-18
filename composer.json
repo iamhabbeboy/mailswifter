@@ -2,6 +2,7 @@
     "name": "abiodun/mailswifter",
         "license": "MIT",
         "type": "library",
+        "version": "1.0.1",
         "description": "Mail swifter is a free mailer built on swiftmailer for html template injection and data parser",
         "keywords": [
             "template", "mail", "mailer", "email"
@@ -20,10 +21,5 @@
 		"psr-4": {
 			"MailSwifter\\": "src/"
 		}
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
     }
 }
