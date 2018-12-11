@@ -19,7 +19,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"MailSwifter\\": "src/"
+			"Abiodun\\MailSwifter\\": "src/",
+			"Abiodun\\Exception\\": "src/Exception"
 		}
     }
 }

@@ -1,14 +1,17 @@
 <?php
-namespace MailSwifter;
+namespace Abiodun\MailSwifter;
 
-use Swift_SmtpTransport;
-use Swift_Message;
+use Abiodun\Exception\TemplateNotFoundException;
+use Abiodun\Exception\TransportException;
 use Swift_Mailer;
+use Swift_Message;
+use Swift_SmtpTransport;
 
 /**
  * Undocumented class
  */
-class MailSwifter {
+class MailProvider
+{
 
     /**
      * Undocumented variable
@@ -69,16 +72,18 @@ class MailSwifter {
      * @param string $username
      * @param string $password
      */
-    public function __construct($username = '', $password = '', $smtp = false)
+    public function __construct($object = [])
     {
-        $this->username = $username;
-        $this->password = $password;
-        $this->isSMTP   = $smtp;
+        if (array_key_exists('username', $object) && array_key_exists('password', $object)) {
+            $this->username = $object['username'];
+            $this->password = $object['password'];
+        }
+        $this->isSMTP = array_key_exists('smtp', $object) ? $object['smtp'] : false;
 
-        $this->subject  = '';
-        $this->from     = [];
-        $this->to       = [];
-        $this->body     = '';
+        $this->subject = '';
+        $this->from = [];
+        $this->to = [];
+        $this->body = '';
     }
     /**
      * Undocumented function
@@ -87,24 +92,30 @@ class MailSwifter {
      */
     public function send()
     {
+        try {
+            if ($this->isSMTP !== false) {
+                $smtp = $this->smtp($this->isSMTP);
+                $mailer = new Swift_Mailer($smtp);
+            } else {
+                $mailer = new Swift_Mailer();
+            }
 
-        $smtp       = ( $this->isSMTP == true ) ? $this->smtp() : '';
-        $mailer     = new Swift_Mailer($smtp);
+            if ($this->subject !== '') {
+                $subject = $this->subject;
 
-        if( $this->subject !== '') {
+                $message = (new Swift_Message($subject))
 
-            $subject = $this->subject;
-            $message = (new Swift_Message($subject))
+                    ->setFrom($this->from)
+                    ->setTo($this->to)
+                    ->setBody($this->body, "text/html")
+                ;
 
-            ->setFrom( $this->from )
-            ->setTo( $this->to )
-            ->setBody( $this->body, "text/html" )
-            ;
-
-            $result = $mailer->send($message);
-            return $result;
-        } else {
-            throw new Exception('Empty Information supplied');
+                $result = $mailer->send($message);
+                return $result;
+            } else {
+                throw new Exception('Empty Information supplied');
+            }
+        } catch (TransportException $e) {
         }
     }
     /**
@@ -112,12 +123,12 @@ class MailSwifter {
      *
      * @return void
      */
-    public function smtp()
+    public function smtp($smtp)
     {
-        $transport = (new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))
-        ->setAuthMode('login')
-        ->setUsername( $this->username )
-        ->setPassword( $this->password )
+        $transport = (new Swift_SmtpTransport($smtp, 587, 'tls'))
+            ->setAuthMode('login')
+            ->setUsername($this->username)
+            ->setPassword($this->password)
         ;
         return $transport;
     }
@@ -131,21 +142,20 @@ class MailSwifter {
      */
     public function template($file, array $data_list)
     {
-        if(is_file($file)) {
+        if (is_file($file)) {
+            $file_get = file_get_contents($file);
 
-            $file_get   = file_get_contents($file);
+            $keys = array_keys($data_list);
+            $values = array_values($data_list);
 
-            $keys       = array_keys($data_list);
-            $values     = array_values($data_list);
-
-            $append     = array_map(function($value) { return '['.$value. ']'; }, $keys);
-            $replace    = str_replace($append, $values, $file_get);
+            $append = array_map(function ($value) {
+                return '[' . $value . ']';
+            }, $keys);
+            $replace = str_replace($append, $values, $file_get);
 
             $this->body = $replace;
-
         } else {
-            throw new Exception('Mail template file is required or not found');
+            throw new TemplateNotFoundException('Mail template file is required or not found');
         }
     }
-
 }
