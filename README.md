@@ -1,6 +1,6 @@
 # mailswifter
 
->Mail swifter is a free mailer built on swiftmailer for html template injection and data parser
+>Mail swifter is a free mailer built on swiftmailer for html template injection and data parser.
 
 
 ## Installation
