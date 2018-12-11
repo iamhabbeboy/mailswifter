@@ -22,7 +22,7 @@ use Abiodun\MailSwifter\MailProvider
         'smtp' => 'smtp.gmail.com',
     ]);
 
-     $mail_provider->from = ['username@gmail.com' => 'Testing MailSwifter'];
+    $mail_provider->from = ['username@gmail.com' => 'Testing MailSwifter'];
     $mail_provider->to = ['username@gmail.com', 'username@gmail.com' => 'Mailing'];
 
     $mail_provider->subject = 'New Mail Test';
